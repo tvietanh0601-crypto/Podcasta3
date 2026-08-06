@@ -212,10 +212,21 @@
         .chat-feed { display: flex; flex-direction: column; gap: 12px; max-height: 220px; overflow-y: auto; }
         .chat-item { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); padding: 12px 18px; border-radius: 12px; font-size: 0.9rem; border-left: 3px solid var(--secondary-neon); }
 
-        /* CTA BOX */
+        /* CTA BOX & TERMS */
         .cta-box { text-align: center; background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(0, 240, 255, 0.05)); border: 1px solid var(--primary-neon); border-radius: 28px; padding: 50px 30px; box-shadow: 0 0 40px rgba(168, 85, 247, 0.25); }
+        .terms-text { color: #e2e8f0; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; }
+        .terms-text a { color: #a855f7; font-weight: 700; text-decoration: underline; cursor: pointer; transition: 0.3s; }
+        .terms-text a:hover { color: var(--secondary-neon); }
         .btn-tiktok { display: inline-flex; align-items: center; gap: 12px; background: #fff; color: #000; font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 900; padding: 18px 42px; border-radius: 50px; text-decoration: none; transition: 0.3s; }
         .btn-tiktok:hover { background: var(--secondary-neon); transform: scale(1.08); box-shadow: 0 0 35px var(--secondary-neon); }
+
+        /* MODAL DIỀU KHOẢN & CHÍNH SÁCH */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: #0f0c1c; border: 1px solid var(--primary-neon); border-radius: 20px; width: 100%; max-width: 600px; padding: 30px; position: relative; box-shadow: 0 0 30px var(--primary-neon); max-height: 80vh; overflow-y: auto; }
+        .modal-title { font-family: 'Orbitron', sans-serif; color: var(--secondary-neon); margin-bottom: 15px; font-size: 1.3rem; }
+        .modal-body { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: #fff; font-size: 1.5rem; cursor: pointer; }
+        .close-btn:hover { color: var(--accent-pink); }
 
         /* FOOTER */
         footer { background: #020205; border-top: 1px solid rgba(255, 255, 255, 0.05); padding: 35px 20px; text-align: center; width: 100%; margin-top: auto; }
@@ -384,18 +395,34 @@
             </div>
         </section>
 
-        <!-- CTA TIKTOK -->
+        <!-- CTA TIKTOK & TERMS -->
         <section class="cta-box" data-aos="zoom-in-up">
             <h2 style="font-size: 1.8rem; font-family: 'Orbitron'; margin-bottom: 15px;">Tham Gia Cùng Podcast A3 Ngay!</h2>
-            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 1rem;">
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 1rem;">
                 Vậy, còn chần chừ gì mà không thử tham gia với chúng tôi?<br>
                 Tham gia qua phần contact tại kênh Tiktok chính chủ của Podcast A3.
             </p>
+
+            <p class="terms-text">
+                Bằng việc tiếp tục, bạn đồng ý với <a onclick="openModal('terms')">Điều khoản sử dụng</a> của Podcast A3. Đọc <a onclick="openModal('privacy')">Chính sách quyền riêng tư</a> của chúng tôi.
+            </p>
+
             <a href="https://tiktok.com/@podcasta3_2026" target="_blank" class="btn-tiktok">
                 <i class="fa-brands fa-tiktok"></i> THAM GIA NGAY HÔM NAY
             </a>
         </section>
 
+    </div>
+
+    <!-- MODAL HIỂN THỊ NỘI DUNG -->
+    <div class="modal" id="info-modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h3 class="modal-title" id="modal-title-text">Tiêu đề</h3>
+            <div class="modal-body" id="modal-body-text">
+                Nội dung...
+            </div>
+        </div>
     </div>
 
     <!-- FOOTER -->
@@ -454,6 +481,34 @@
             item.innerHTML = `<strong>Thành viên mới:</strong> ${txt}`;
             feed.prepend(item);
             input.value = '';
+        }
+
+        /* BẬT BẢNG TẢI NỘI DUNG ĐIỀU KHOẢN */
+        function openModal(type) {
+            const modal = document.getElementById('info-modal');
+            const title = document.getElementById('modal-title-text');
+            const body = document.getElementById('modal-body-text');
+
+            if(type === 'terms') {
+                title.innerText = "ĐIỀU KHOẢN SỬ DỤNG - PODCAST A3";
+                body.innerHTML = "<p>1. Tôn trọng mọi thành viên trong cộng đồng Podcast A3.</p><p>2. Không phát tán thông tin sai sự thật hoặc nội dung vi phạm thuần phong mỹ tục.</p><p>3. Mọi nội dung video/audio thuộc bản quyền của Đội Văn Nghệ Lớp A3.</p>";
+            } else if(type === 'privacy') {
+                title.innerText = "CHÍNH SÁCH QUYỀN RIÊNG TƯ";
+                body.innerHTML = "<p>1. Chúng tôi tôn trọng và bảo mật thông tin cá nhân của người dùng ghé thăm trang web.</p><p>2. Dữ liệu tin nhắn tại Sổ lưu bút chỉ phục vụ mục đích giao lưu vui vẻ nội bộ.</p><p>3. Không chia sẻ dữ liệu cho bên thứ ba vì mục đích thương mại.</p>";
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('info-modal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('info-modal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 </body>
