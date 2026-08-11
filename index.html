@@ -77,6 +77,25 @@
         .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
         .nav-links a:hover { color: var(--secondary-neon); text-shadow: 0 0 10px var(--secondary-neon); }
 
+        .btn-nav-auth {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--secondary-neon) !important;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 700 !important;
+            border: 1px solid var(--secondary-neon);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s !important;
+        }
+        .btn-nav-auth:hover {
+            background: var(--secondary-neon);
+            color: #000 !important;
+            box-shadow: 0 0 20px var(--secondary-neon) !important;
+        }
+
         .btn-nav-video {
             background: linear-gradient(45deg, var(--accent-pink), var(--primary-neon));
             color: #fff !important;
@@ -101,6 +120,15 @@
         .hero { text-align: center; margin-bottom: 50px; }
         .hero-title { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 900; letter-spacing: -1px; line-height: 1.1; margin-bottom: 20px; background: linear-gradient(135deg, #ffffff 10%, var(--secondary-neon) 50%, var(--primary-neon) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 0 30px rgba(0, 240, 255, 0.2); }
 
+        .hero-btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
         .hero-action-btn {
             display: inline-flex;
             align-items: center;
@@ -115,12 +143,34 @@
             text-decoration: none;
             box-shadow: 0 0 35px rgba(0, 240, 255, 0.5);
             transition: 0.3s;
-            margin-top: 15px;
             letter-spacing: 1px;
         }
         .hero-action-btn:hover {
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 0 55px var(--secondary-neon);
+        }
+
+        .hero-auth-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(15, 12, 28, 0.8);
+            color: var(--secondary-neon);
+            border: 2px solid var(--secondary-neon);
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 16px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+        .hero-auth-btn:hover {
+            background: var(--secondary-neon);
+            color: #000;
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px var(--secondary-neon);
         }
 
         /* STUDIO AUDIO MIXER BOARD */
@@ -236,6 +286,8 @@
             .knobs-group { display: none; }
             .input-group { flex-direction: column; }
             .btn-tiktok { width: 100%; justify-content: center; }
+            .hero-btn-group { flex-direction: column; width: 100%; }
+            .hero-action-btn, .hero-auth-btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -260,6 +312,7 @@
             <li><a href="#about">Về A3</a></li>
             <li><a href="#team">Voice Stars</a></li>
             <li><a href="#qa">Hỏi Đáp</a></li>
+            <li><a href="xacthuctruycap.html" class="btn-nav-auth"><i class="fa-solid fa-shield-halved"></i> Xác Thực</a></li>
             <li><a href="videos.html" class="btn-nav-video"><i class="fa-solid fa-play-circle"></i> Xem Video A3</a></li>
         </ul>
     </nav>
@@ -271,9 +324,14 @@
             <h1 class="hero-title">PODCAST A3 CYBER STUDIO</h1>
             <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 25px;">Không gian âm thanh thanh xuân & những khoảnh khắc bùng nổ của A3</p>
             
-            <a href="videos.html" class="hero-action-btn">
-                <i class="fa-solid fa-circle-play"></i> XEM VIDEO VĂN NGHỆ LỚP A3
-            </a>
+            <div class="hero-btn-group">
+                <a href="videos.html" class="hero-action-btn">
+                    <i class="fa-solid fa-circle-play"></i> XEM VIDEO VĂN NGHỆ LỚP A3
+                </a>
+                <a href="xacthuctruycap.html" class="hero-auth-btn">
+                    <i class="fa-solid fa-user-lock"></i> XÁC THỰC TRUY CẬP
+                </a>
+            </div>
         </header>
 
         <!-- DASHBOARD STATS -->
@@ -446,11 +504,11 @@
             
             if(isPlaying) {
                 wave.classList.add('playing');
-                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                if(btn) btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
                 startVUMeter();
             } else {
                 wave.classList.remove('playing');
-                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                if(btn) btn.innerHTML = '<i class="fa-solid fa-play"></i>';
                 stopVUMeter();
             }
         }
