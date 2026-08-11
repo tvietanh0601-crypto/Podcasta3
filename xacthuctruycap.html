@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full scroll-smooth">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Đang xác thực truy cập…</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            brand: '#e32d2d',
+                            brandLight: '#f08d8d',
+                            accent: '#f57272',
+                        },
+                        keyframes: {
+                            float: {
+                                '0%,100%': {
+                                    transform: 'translateY(0)'
+                                },
+                                '50%': {
+                                    transform: 'translateY(-6px)'
+                                }
+                            },
+                            fadeIn: {
+                                '0%': {
+                                    opacity: 0,
+                                    transform: 'translateY(20px)'
+                                },
+                                '100%': {
+                                    opacity: 1,
+                                    transform: 'translateY(0)'
+                                }
+                            },
+                        },
+                        animation: {
+                            float: 'float 3s ease-in-out infinite',
+                            fadeIn: 'fadeIn 1s ease-out forwards',
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            body {
+                background: radial-gradient(rgba(0, 0, 0, .04) 1px, transparent 1px),
+                    linear-gradient(135deg, #f9fafb, #eef2ff);
+                background-size: 22px 22px, 100% 100%;
+            }
+        </style>
+    </head>
+    <body class="h-full flex items-center justify-center text-slate-700 relative overflow-hidden">
+        <!-- Glow circles -->
+        <div class="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-gradient-to-r from-brandLight to-accent rounded-full blur-[160px] opacity-30 -z-10"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-gradient-to-r from-indigo-200 to-purple-200 rounded-full blur-[140px] opacity-40 -z-10"></div>
+        <!-- Main Card -->
+        <main class="relative w-full max-w-md mx-auto rounded-3xl shadow-2xl bg-white/95 backdrop-blur-lg border border-slate-200 p-8 text-center animate-fadeIn">
+            <!-- Icon -->
+            <div class="relative mx-auto w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-r from-brand to-accent text-white shadow-xl animate-float">
+                <i class="fa-solid fa-shield-halved text-3xl drop-shadow"></i>
+                <div class="absolute inset-0 rounded-full border-t-4 border-white/40 animate-spin-slow"></div>
+            </div>
+            <!-- Title -->
+            <h1 class="mt-6 text-2xl font-bold text-slate-800">Đang xác thực truy cập</h1>
+            <p class="text-slate-500 text-sm mt-2 leading-relaxed"> Hệ thống đang đảm bảo kết nối của bạn an toàn trước khi vào <span class="font-semibold text-brand"> podcast A3 </span>. </p>
+            <!-- Progress bar -->
+            <div class="mt-8">
+                <div class="h-2 w-full rounded-full bg-slate-200 overflow-hidden">
+                    <div id="bar" class="h-2 w-0 rounded-full bg-gradient-to-r from-brand to-accent transition-all duration-150 ease-linear"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-[11px] text-slate-500">
+                    <span>Bắt đầu</span>
+                    <span>Hoàn tất</span>
+                </div>
+            </div>
+            <!-- Countdown -->
+            <div class="mt-4 flex items-center justify-center gap-2 text-sm text-slate-600">
+                <i class="fa-regular fa-clock text-brand"></i>
+                <span>Xác thực trong <b>
+                        <span id="sec" class="text-brand">3</span> giây </b>… </span>
+            </div>
+            <!-- Tip -->
+            <div class="mt-5 text-xs text-slate-500 space-y-1 leading-relaxed">
+                <p>Nếu trang này hiển thị quá lâu, hãy làm mới (Ctrl/⌘ + R).</p>
+                <p>Trang bảo vệ máy chủ khỏi tấn công từ bot tự động.</p>
+            </div>
+            <!-- Footer -->
+            <footer class="mt-6 flex justify-between text-xs text-slate-500">
+                <span>© <span id="year"></span> Podcast A3 </span>
+                <span class="flex items-center gap-1">
+                    <span class="h-2 w-2 rounded-full bg-brand animate-pulse"></span> Secure Access </span>
+            </footer>
+        </main>
+        <script>
+            (function() {
+                const total = 3000, fps = 100, step = 1000 / fps;
+                const start = performance.now();
+                const bar = document.getElementById('bar');
+                const sec = document.getElementById('sec');
+                const year = document.getElementById('year');
+                year.textContent = new Date().getFullYear();
+                const nonce = "f3a920499529bb7e3654906922162c32";
+                const ticker = setInterval(() => {
+                    const now = performance.now();
+                    const elapsed = Math.min(now - start, total);
+                    const remain = Math.ceil((total - elapsed) / 1000);
+                    const percent = (elapsed / total) * 100;
+                    sec.textContent = remain;
+                    bar.style.width = percent + '%';
+                    if (elapsed >= total) {
+                        clearInterval(ticker);
+                        fetch('/security-verify', {
+                            method: 'POST',
+                            credentials: 'include',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({
+                                nonce
+                            })
+                        }).then(r => {
+                            if (r.status === 204 || r.ok) window.location.reload();
+                            else setTimeout(() => window.location.reload(), 1200);
+                        }).catch(() => setTimeout(() => window.location.reload(), 1200));
+                    }
+                }, step);
+            })();
+        </script>
+    </body>
+</html>
