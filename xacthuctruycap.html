@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xác Thực Truy Cập - Podcast A3 Studio</title>
     
-    <!-- Tự động chuyển hướng sang home.html sau 4 giây -->
-    <meta http-equiv="refresh" content="4; url=home.html">
-    
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -104,15 +101,12 @@
             color: #00f0ff;
         }
 
-        .skip-btn {
-            display: inline-block;
-            margin-top: 20px;
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: 0.3s;
+        .error-msg {
+            color: #ff0055;
+            font-weight: 700;
+            margin-top: 15px;
+            display: none;
         }
-        .skip-btn:hover { color: #f8fafc; }
     </style>
 </head>
 <body>
@@ -120,38 +114,85 @@
     <div class="cyber-grid"></div>
 
     <div class="auth-card">
-        <div class="scanner-icon">
+        <div class="scanner-icon" id="icon-box">
             <i class="fa-solid fa-shield-halved"></i>
         </div>
         <h1 class="title">XÁC THỰC TRUY CẬP</h1>
-        <p class="status-text" id="status-msg">Đang mã hóa kết nối tới Cyber Studio A3...</p>
+        <p class="status-text" id="status-msg">Đang kiểm tra vị trí & địa chỉ IP...</p>
 
-        <div class="progress-bar-bg">
+        <div class="progress-bar-bg" id="progress-box">
             <div class="progress-bar-fill"></div>
         </div>
 
-        <div class="timer-box">
+        <div class="timer-box" id="timer-box">
             TỰ ĐỘNG CHUYỂN HƯỚNG SAU <span id="countdown">4</span> GIÂY
         </div>
 
-        <a href="home.html" class="skip-btn">Bỏ qua / Vào thẳng trang chủ &rarr;</a>
+        <div class="error-msg" id="error-msg">
+            ⚠️ Phát hiện truy cập không hợp lệ! Đang chuyển hướng ra ngoài...
+        </div>
     </div>
 
     <script>
-        // Đếm ngược số giây hiển thị trên màn hình
-        let seconds = 4;
+        const statusMsg = document.getElementById('status-msg');
         const countdownEl = document.getElementById('countdown');
-        
-        const timer = setInterval(() => {
-            seconds--;
-            if (seconds >= 0) {
-                countdownEl.innerText = seconds;
-            }
-            if (seconds <= 0) {
-                clearInterval(timer);
-                window.location.href = "home.html";
-            }
-        }, 1000);
+        const errorMsg = document.getElementById('error-msg');
+        const iconBox = document.getElementById('icon-box');
+
+        // Hàm đá người dùng ra Google
+        function kickUserToGoogle(reason) {
+            statusMsg.style.color = '#ff0055';
+            statusMsg.innerText = reason;
+            errorMsg.style.display = 'block';
+            iconBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color: #ff0055;"></i>';
+            document.getElementById('progress-box').style.display = 'none';
+            document.getElementById('timer-box').style.display = 'none';
+
+            // Đợi 1.5 giây rồi kick ra Google
+            setTimeout(() => {
+                window.location.href = "https://www.google.com";
+            }, 1500);
+        }
+
+        // Kiểm tra địa chỉ IP
+        fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+                // Check 1: Nếu IP không thuộc Việt Nam (VN)
+                if (data.country_code !== 'VN') {
+                    kickUserToGoogle("Rất tiếc, trang web chỉ cho phép truy cập từ Việt Nam.");
+                    return;
+                }
+
+                // Check 2: Nếu phát hiện dùng Proxy / VPN / IP bất thường (nếu có dữ liệu)
+                if (data.security && (data.security.is_proxy || data.security.is_vpn)) {
+                    kickUserToGoogle("Cảnh báo Security: Phát hiện Proxy/VPN nguy hiểm!");
+                    return;
+                }
+
+                // Nếu IP Hợp Lệ -> Cho phép đếm ngược 4s và vào trang chính
+                statusMsg.innerText = `Xác thực thành công (IP: ${data.ip} - ${data.city})!`;
+                startCountdown();
+            })
+            .catch(error => {
+                // Trường hợp API lỗi hoặc bị chặn adblock, mặc định cho qua hoặc xử lý tiếp
+                statusMsg.innerText = "Đã xác thực thiết bị hợp lệ!";
+                startCountdown();
+            });
+
+        function startCountdown() {
+            let seconds = 4;
+            const timer = setInterval(() => {
+                seconds--;
+                if (seconds >= 0) {
+                    countdownEl.innerText = seconds;
+                }
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    window.location.href = "home.html";
+                }
+            }, 1000);
+        }
     </script>
 </body>
 </html>
