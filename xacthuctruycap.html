@@ -118,7 +118,7 @@
             <i class="fa-solid fa-shield-halved"></i>
         </div>
         <h1 class="title">XÁC THỰC TRUY CẬP</h1>
-        <p class="status-text" id="status-msg">Đang kiểm tra vị trí & địa chỉ IP...</p>
+        <p class="status-text" id="status-msg">Đang kết nối hệ thống bảo mật...</p>
 
         <div class="progress-bar-bg" id="progress-box">
             <div class="progress-bar-fill"></div>
@@ -129,7 +129,7 @@
         </div>
 
         <div class="error-msg" id="error-msg">
-            ⚠️ Phát hiện truy cập không hợp lệ! Đang chuyển hướng ra ngoài...
+            ⚠️ Đang chuyển hướng...
         </div>
     </div>
 
@@ -139,7 +139,7 @@
         const errorMsg = document.getElementById('error-msg');
         const iconBox = document.getElementById('icon-box');
 
-        // Hàm đá người dùng ra Google
+        // Hàm kích người dùng ra Google khi không phải IP Việt Nam
         function kickUserToGoogle(reason) {
             statusMsg.style.color = '#ff0055';
             statusMsg.innerText = reason;
@@ -148,35 +148,28 @@
             document.getElementById('progress-box').style.display = 'none';
             document.getElementById('timer-box').style.display = 'none';
 
-            // Đợi 1.5 giây rồi kick ra Google
             setTimeout(() => {
                 window.location.href = "https://www.google.com";
-            }, 1500);
+            }, 1800);
         }
 
-        // Kiểm tra địa chỉ IP
-        fetch('https://ipapi.co/json/')
+        // Sử dụng API IPWhois siêu chuẩn xác cho mạng Việt Nam
+        fetch('https://ipwho.is/')
             .then(response => response.json())
             .then(data => {
-                // Check 1: Nếu IP không thuộc Việt Nam (VN)
-                if (data.country_code !== 'VN') {
-                    kickUserToGoogle("Rất tiếc, trang web chỉ cho phép truy cập từ Việt Nam.");
+                // Kiểm tra mã quốc gia (Chỉ chặn nếu biết CHẮC CHẮN không phải VN)
+                if (data.success && data.country_code !== 'VN') {
+                    kickUserToGoogle("Rất tiếc, trang web chỉ hỗ trợ truy cập tại Việt Nam!");
                     return;
                 }
 
-                // Check 2: Nếu phát hiện dùng Proxy / VPN / IP bất thường (nếu có dữ liệu)
-                if (data.security && (data.security.is_proxy || data.security.is_vpn)) {
-                    kickUserToGoogle("Cảnh báo Security: Phát hiện Proxy/VPN nguy hiểm!");
-                    return;
-                }
-
-                // Nếu IP Hợp Lệ -> Cho phép đếm ngược 4s và vào trang chính
-                statusMsg.innerText = `Xác thực thành công (IP: ${data.ip} - ${data.city})!`;
+                // Nếu là VN hoặc không fetch được chi tiết -> Cho qua bình thường
+                statusMsg.innerText = "Xác thực thiết bị hợp lệ!";
                 startCountdown();
             })
             .catch(error => {
-                // Trường hợp API lỗi hoặc bị chặn adblock, mặc định cho qua hoặc xử lý tiếp
-                statusMsg.innerText = "Đã xác thực thiết bị hợp lệ!";
+                // Nếu API bị chặn bởi Adblock/mạng lag, mặc định vẫn cho vào web
+                statusMsg.innerText = "Đã hoàn tất kiểm tra bảo mật!";
                 startCountdown();
             });
 
