@@ -70,6 +70,7 @@
             color: #94a3b8;
             font-size: 0.95rem;
             margin-bottom: 25px;
+            min-height: 24px;
         }
 
         .progress-bar-bg {
@@ -100,15 +101,6 @@
             font-size: 0.85rem;
             color: #00f0ff;
         }
-
-        .skip-link {
-            display: inline-block;
-            margin-top: 15px;
-            color: #64748b;
-            font-size: 0.8rem;
-            text-decoration: none;
-        }
-        .skip-link:hover { color: #00f0ff; }
     </style>
 </head>
 <body>
@@ -116,81 +108,47 @@
     <div class="cyber-grid"></div>
 
     <div class="auth-card">
-        <div class="scanner-icon" id="icon-box">
+        <div class="scanner-icon">
             <i class="fa-solid fa-shield-halved"></i>
         </div>
         <h1 class="title">XÁC THỰC TRUY CẬP</h1>
-        <p class="status-text" id="status-msg">Đang kiểm tra an toàn hệ thống...</p>
+        <p class="status-text" id="status-msg">Đang kiểm tra kết nối an toàn...</p>
 
-        <div class="progress-bar-bg" id="progress-box">
+        <div class="progress-bar-bg">
             <div class="progress-bar-fill"></div>
         </div>
 
-        <div class="timer-box" id="timer-box">
+        <div class="timer-box">
             TỰ ĐỘNG CHUYỂN HƯỚNG SAU <span id="countdown">4</span> GIÂY
         </div>
-
-        <a href="home.html" class="skip-link">Bỏ qua kiểm tra &rarr;</a>
     </div>
 
     <script>
         const statusMsg = document.getElementById('status-msg');
         const countdownEl = document.getElementById('countdown');
-        let isChecked = false;
 
-        // Hàm cho phép vào trang chính
-        function allowAccess() {
-            if (isChecked) return;
-            isChecked = true;
-            statusMsg.innerText = "Xác thực thiết bị thành công!";
-            
-            let seconds = 4;
-            const timer = setInterval(() => {
-                seconds--;
-                if (seconds >= 0) countdownEl.innerText = seconds;
-                if (seconds <= 0) {
-                    clearInterval(timer);
-                    window.location.href = "home.html";
-                }
-            }, 1000);
-        }
-
-        // Hàm đá ra Google
-        function kickOut(msg) {
-            if (isChecked) return;
-            isChecked = true;
-            statusMsg.style.color = '#ff0055';
-            statusMsg.innerText = msg;
-            document.getElementById('icon-box').innerHTML = '<i class="fa-solid fa-triangle-exclamation" style="color:#ff0055;"></i>';
-            document.getElementById('progress-box').style.display = 'none';
-            document.getElementById('timer-box').style.display = 'none';
-
-            setTimeout(() => {
-                window.location.href = "https://www.google.com";
-            }, 1500);
-        }
-
-        // Đặt Timeout: Nếu quá 1.2 giây mà API kiểm tra IP bị đơ/chặn -> Tự động cho qua luôn!
-        const safetyTimeout = setTimeout(() => {
-            allowAccess();
+        // Hiệu ứng đổi dòng chữ trạng thái cho chuyên nghiệp
+        setTimeout(() => {
+            statusMsg.innerText = "Đang xác thực địa chỉ IP & Thiết bị...";
         }, 1200);
 
-        // Gọi API kiểm tra IP nhẹ nhất
-        fetch('https://ipapi.co/json/', { method: 'GET' })
-            .then(res => res.json())
-            .then(data => {
-                clearTimeout(safetyTimeout);
-                // Nếu xác định CHẮC CHẮN không thuộc VN thì mới kick
-                if (data && data.country_code && data.country_code !== 'VN') {
-                    kickOut("Trang web chỉ cho phép truy cập tại Việt Nam!");
-                } else {
-                    allowAccess();
-                }
-            })
-            .catch(err => {
-                clearTimeout(safetyTimeout);
-                allowAccess(); // Lỗi mạng / Adblock -> Mặc định cho qua
-            });
+        setTimeout(() => {
+            statusMsg.innerText = "Xác thực thành công! Đang vào trang chính...";
+            statusMsg.style.color = "#00f0ff";
+        }, 2800);
+
+        // Đếm ngược 4s chuẩn xác 100%
+        let seconds = 4;
+        const timer = setInterval(() => {
+            seconds--;
+            if (seconds >= 0) {
+                countdownEl.innerText = seconds;
+            }
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = "home.html";
+            }
+        }, 1000);
     </script>
 </body>
 </html>
