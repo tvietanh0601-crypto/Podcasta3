@@ -3,17 +3,335 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đang chuyển hướng - Podcast A3</title>
-    <!-- Tự động chuyển hướng ngay lập tức sang trang xác thực -->
-    <meta http-equiv="refresh" content="0; url=xacthuctruycap.html">
-    <script>
-        window.location.href = "xacthuctruycap.html";
-    </script>
+    <title>Trang Chủ - Podcast A3 Studio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body {
+            background-color: #05040a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .cyber-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- NAVBAR STYLES --- */
+        .navbar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(15, 12, 28, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: #00f0ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #00f0ff;
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero-card {
+            background: rgba(15, 12, 28, 0.75);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            max-width: 650px;
+            width: 100%;
+        }
+
+        .hero-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00f0ff, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* --- MODAL POPUP STYLES --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 4, 10, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background: #0f0c1c;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.25);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 550px;
+            padding: 30px;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: #00f0ff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #ff4757;
+        }
+
+        .modal-body {
+            color: #cbd5e1;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            overflow-y: auto;
+            padding-right: 10px;
+            text-align: left;
+        }
+
+        .modal-body p {
+            margin-bottom: 12px;
+        }
+
+        .modal-body ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        /* Scrollbar tùy chỉnh */
+        .modal-body::-webkit-scrollbar { width: 6px; }
+        .modal-body::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        .modal-body::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.3); border-radius: 4px; }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 0 15px; }
+            .nav-menu { gap: 8px; }
+            .nav-link { padding: 6px 10px; font-size: 0.8rem; }
+            .nav-logo span { display: none; }
+        }
+    </style>
 </head>
-<body style="background-color: #05040a; color: #00f0ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center;">
-    <div style="border: 2px solid #00f0ff; padding: 20px 40px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,240,255,0.3);">
-        <h2 style="margin-bottom: 10px; color: #fff;">PODCAST A3</h2>
-        <p style="margin: 0; font-size: 0.95rem;">Đang kết nối tới cổng xác thực truy cập...</p>
+<body>
+
+    <div class="cyber-grid"></div>
+
+    <!-- NAVBAR NGANG -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">
+            <i class="fa-solid fa-podcast"></i>
+            <span>PODCAST A3</span>
+        </a>
+        <ul class="nav-menu">
+            <li>
+                <a href="xacthuctruycap.html" class="nav-link active">
+                    <i class="fa-solid fa-house"></i> Xác minh
+                </a>
+            </li>
+            <li>
+                <span class="nav-link" onclick="openModal('modal-terms')">
+                    <i class="fa-solid fa-file-contract"></i> Điều Khoản Sử Dụng
+                </span>
+            </li>
+            <li>
+                <span class="nav-link" onclick="openModal('modal-privacy')">
+                    <i class="fa-solid fa-shield-halved"></i> Chính Sách Quyền Riêng Tư
+                </span>
+            </li>
+            <li>
+                <span class="nav-link" onclick="openModal('modal-about')">
+                    <i class="fa-solid fa-users"></i> Về Chúng Tôi
+                </span>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <div class="main-container">
+        <div class="hero-card">
+            <h1 class="hero-title">VUI LÒNG XÁC MINH ĐỂ VÀO TRANG CHỦ CHÍNH</h1>
+            <p class="hero-desc">trang này sử dụng bot tối ưu để đảm bảo bảo mật cho chúng mình, vì vậy, hãy xác minh từ bot</p>
+        </div>
     </div>
+
+    <!-- 1. MODAL ĐIỀU KHOẢN SỬ DỤNG -->
+    <div class="modal-overlay" id="modal-terms">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fa-solid fa-file-contract"></i> ĐIỀU KHOẢN SỬ DỤNG</h2>
+                <button class="close-btn" onclick="closeModal('modal-terms')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>1. Quy định chung:</strong> Bằng cách truy cập vào trang web này, bạn đồng ý tuân thủ các quy định và điều khoản sử dụng của Podcast A3 Studio.</p>
+                <p><strong>2. Bản quyền nội dung:</strong> Tất cả các hình ảnh, âm thanh, video và tài nguyên được đăng tải trên hệ thống thuộc sở hữu của Ban Quản trị Podcast A3. Vui lòng không sao chép hoặc thương mại hóa khi chưa có sự đồng ý.</p>
+                <p><strong>3. Tương tác người dùng:</strong> Không sử dụng hệ thống để phát tán thông tin độc hại, spam hoặc thực hiện các hành vi gây ảnh hưởng xấu tới hệ thống mạng.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MODAL CHÍNH SÁCH QUYỀN RIÊNG TƯ -->
+    <div class="modal-overlay" id="modal-privacy">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fa-solid fa-shield-halved"></i> CHÍNH SÁCH QUYỀN RIÊNG TƯ</h2>
+                <button class="close-btn" onclick="closeModal('modal-privacy')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>1. Thu thập thông tin:</strong> Chúng tôi chỉ thu thập các dữ liệu cơ bản về lượt truy cập nhằm mục đích bảo mật và cải thiện chất lượng dịch vụ.</p>
+                <p><strong>2. Bảo mật dữ liệu:</strong> Mọi thông tin người dùng đều được bảo mật an toàn. Chúng tôi cam kết không chia sẻ dữ liệu cá nhân cho bên thứ ba vì bất kỳ mục đích thương mại nào.</p>
+                <p><strong>3. Quyền của người dùng:</strong> Bạn có quyền yêu cầu xóa thông tin truy cập của mình trên hệ thống bất kỳ lúc nào bằng cách liên hệ với Ban Quản trị.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. MODAL VỀ CHÚNG TÔI -->
+    <div class="modal-overlay" id="modal-about">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title"><i class="fa-solid fa-users"></i> VỀ CHÚNG TÔI</h2>
+                <button class="close-btn" onclick="closeModal('modal-about')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Ban Quản trị chúng tôi được thành lập không chỉ để hoàn thành một bài tập trên lớp, mà là nơi chúng mình hiện thực hóa những ý tưởng sáng tạo.</p>
+                <p>Mỗi thành viên trong nhóm mang một màu sắc, một thế mạnh riêng — từ tư duy logic, khả năng đồ họa đến kỹ năng quản lý. Sự khác biệt đó chính là mảnh ghép hoàn hảo giúp chúng mình cùng nhau tạo nên những sản phẩm chất lượng và mang lại giá trị thực tế.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        // Đóng Popup khi nhấp vào vùng tối bên ngoài
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
+        }
+    </script>
+
 </body>
 </html>
